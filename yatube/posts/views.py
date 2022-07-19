@@ -36,8 +36,8 @@ def profile(request, username):
     post_list = user.posts.all()
     page_obj = create_page_obj(request, post_list)
     following = (
-        request.user.is_authenticated and
-        Follow.objects.filter(
+        request.user.is_authenticated
+        and Follow.objects.filter(
             user=request.user,
             author__username=username
         ).exists()

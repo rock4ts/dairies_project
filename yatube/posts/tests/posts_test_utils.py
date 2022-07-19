@@ -60,8 +60,8 @@ def create_test_image(image_name: str, format: str):
         b'\x0A\x00\x3B'
     )
     test_image = SimpleUploadedFile(
-            name='.'.join([image_name, format]),
-            content=small_image,
-            content_type='image/' + format
+        name='.'.join([image_name, format]),
+        content=small_image,
+        content_type='image/' + format
     )
     return test_image
