@@ -88,10 +88,6 @@ class Follow(models.Model):
 
     class Meta:
         constraints = [
-            models.UniqueConstraint(
-                fields=['user', 'author'],
-                name='Пользователь уже подписан на данного автора'
-            ),
             models.CheckConstraint(
                 check=~models.Q(user=models.F('author')),
                 name='Пользователь не может подписаться сам на себя'
