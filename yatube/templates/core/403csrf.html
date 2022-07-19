@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block title %}Ошибка 403{% endblock%}
+{% block 'css_settings'%}
+  .center {
+    text-align: center;
+  }
+{% endblock %}
+{% block content %}
+  <div class='center'>
+    <h2>403: Ошибка проверки CSRF</h2>
+    <br><br>
+    <a href="{% url 'posts:index' %}">На главную</a>
+  </div>
+{% endblock %}

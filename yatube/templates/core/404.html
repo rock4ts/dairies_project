@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block title %}Ошибка 404{% endblock%}
+{% block 'css_settings'%}
+  .center {
+    text-align: center;
+  }
+{% endblock %}
+{% block content %}
+  <div class='center'>
+    <h2>Ошибка 404</h2>
+    <br><br>
+    <p<i>Страницы с адресом '{{ path }}' не существует</i></p>
+    <br><br>
+    <a href="{% url 'posts:index' %}">На главную</a>
+  </div>
+{% endblock %}

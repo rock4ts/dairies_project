@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% block title %}
+  Профайл пользователя {{ author.username }}
+{% endblock %}
+{%block content %}
+  <div class="mb-3">
+    <h3>Все посты пользователя {{ author.username }} </h3>
+    <h4>Всего постов: {{ author.posts.count }} </h4><br>
+    <!-- templates/posts/profile.html -->
+    {% if user.is_authenticated and author != user %}
+      {% if following %}
+        <a
+          class="btn btn-md btn-light"
+          href="{% url 'posts:profile_unfollow' author.username %}" role="button"
+        >
+          Отписаться
+        </a>
+      {% else %}
+          <a
+            class="btn btn-md btn-primary"
+            href="{% url 'posts:profile_follow' author.username %}" role="button"
+          >
+            Подписаться
+          </a>
+      {% endif %}
+    {% endif %}
+  </div>
+  <div class="container py-5">   
+    {% include 'posts/includes/posts_info.html' %}
+  </div>
+{% endblock %}

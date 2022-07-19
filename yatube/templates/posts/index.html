@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% load cache %}
+{% block title %}
+    Последние обновления на сайте
+{% endblock %}
+{% block header %}
+  <h2>Последние обновления на сайте</h2>
+{% endblock %}
+{% block content %}
+  {% include 'posts/includes/switcher.html' %}
+  {% if request.resolver_match.url_name == 'index' %}
+    {% cache 20 index_page page_obj.number %}
+      {% include 'posts/includes/posts_info.html' %}
+    {% endcache %}
+  {% else %}
+    {% include 'posts/includes/posts_info.html' %}
+  {% endif %}
+{% endblock %}

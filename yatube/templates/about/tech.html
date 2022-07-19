@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}Технологии проекта {% endblock %}
+{% block content %}
+  {% load static %}
+  <div class="container">
+    <div class="text-center">
+      <h3>Технологии проекта:</h3><br><br>
+    </div>
+    <div class="row" style="display: grid; place-items: center;">
+      <img src="{% static 'img/python.png' %}" width="120" height="40" alt="PythonLogo">
+      <br>
+      <img src="{% static 'img/django.png' %}" width="95" height="47.5" alt="DjangoLogo">
+    </div>
+  </div>
+{% endblock %}

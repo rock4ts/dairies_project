@@ -1,0 +1,11 @@
+
+{% if widget.is_initial %}
+  : &nbsp; <a href="{{ widget.value.url }}">{{ widget.value|linebreaks }}</a>
+  &nbsp; - &nbsp;
+  {% if not widget.required %}
+    <label for="{{ widget.checkbox_id}}">
+      удалить &nbsp;<input type="checkbox" name="{{ widget.checkbox_name }}" id="{{ widget.checkbox_id }}" />
+    </label>
+  {% endif %}
+{% endif %}
+<input type="{{ widget.type }}" name="{{ widget.name }}"{% include "django/forms/widgets/attrs.html" %}>
