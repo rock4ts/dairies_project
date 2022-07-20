@@ -8,7 +8,7 @@ from .utils import create_page_obj
 
 def index(request):
     template = 'posts/index.html'
-    post_list = Post.objects.all()
+    post_list = Post.objects.select_related('group').all()
     page_obj = create_page_obj(request, post_list)
     context = {
         'page_obj': page_obj,
@@ -116,18 +116,13 @@ def follow_index(request):
 
 @login_required
 def profile_follow(request, username):
-    if request.user.username == username:
+    viewed_profile = get_object_or_404(User, username=username)
+    if request.user == viewed_profile:
         return redirect('posts:profile', username)
-    follow_exists = Follow.objects.filter(
+    Follow.objects.get_or_create(
         user=request.user,
-        author=User.objects.get(username=username)
-    ).exists()
-    if not follow_exists:
-        Follow.objects.create(
-            user=request.user,
-            author=User.objects.get(username=username)
-        )
-        return redirect('posts:profile', username)
+        author=viewed_profile
+    )
     return redirect('posts:profile', username)
 
 

@@ -60,6 +60,14 @@ class PostsModelsTest(TestCase):
             expected_value
         )
 
+    def test_follow_model_applies_unique_constraints(self):
+        followed_user = PostsModelsTest.test_author_for_follow
+        following_user = PostsModelsTest.test_author
+        Follow.objects.create(user=following_user, author=followed_user)
+        with self.assertRaises(Exception) as raised:
+            Follow.objects.create(user=following_user, author=followed_user)
+        self.assertEqual(IntegrityError, type(raised.exception))
+
     def test_no_self_follow(self):
         following_user = PostsModelsTest.test_author
         constraint_name = 'Пользователь не может подписаться сам на себя'

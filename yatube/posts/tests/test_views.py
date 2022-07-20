@@ -312,33 +312,51 @@ class PostsViewsTests(TestCase):
         follows_count = (
             Follow.objects.count()
         )
-        response = self.author_client.post(
+        follow_response = self.author_client.post(
             reverse(
                 'posts:profile_follow',
                 kwargs={'username': followed_user.username}
             )
         )
         new_follow = Follow.objects.exclude(id__in=follow_ids_before_new)[0]
-        self.assertEqual(
-            getattr(new_follow, 'user'),
-            response.wsgi_request.user
-        )
-        self.assertEqual(getattr(new_follow, 'author'), followed_user)
+        self.assertEqual(new_follow.user, follow_response.wsgi_request.user)
+        self.assertEqual(new_follow.author, followed_user)
         self.assertEqual(
             Follow.objects.count(),
             follows_count + 1
         )
+        # test request to create follow obj with same params fails
+        follow_ids_before_duplicate = list(
+            Follow.objects.values_list('id', flat=True)
+        )
+        duplicate_follow_response = self.author_client.post(
+            reverse(
+                'posts:profile_follow',
+                kwargs={'username': followed_user.username}
+            )
+        )
+        new_follow_created = (
+            Follow.objects.exclude(id__in=follow_ids_before_duplicate)
+        )
+        filter_duplicate_follow = Follow.objects.filter(
+            user=duplicate_follow_response.wsgi_request.user,
+            author=followed_user
+        )
+        self.assertFalse(new_follow_created.exists())
+        self.assertEqual(filter_duplicate_follow.count(), 1)
+        self.assertTrue(new_follow == filter_duplicate_follow[0])
+
 
     def test_profile_follow_redirects_if_user_tries_to_follow_himself(self):
         following_user = PostsViewsTests.test_author
-        response = self.author_client.post(
+        follow_response = self.author_client.post(
             reverse(
                 'posts:profile_follow',
                 kwargs={'username': following_user.username}
             )
         )
         self.assertRedirects(
-            response,
+            follow_response,
             reverse(
                 'posts:profile',
                 kwargs={'username': following_user.username}
@@ -347,16 +365,17 @@ class PostsViewsTests(TestCase):
 
     def test_profile_unfollow_for_authorized(self):
         followed_user = PostsViewsTests.test_user_for_follow
-        response_follow = self.author_client.post(
+        follow_response = self.author_client.post(
             reverse(
                 'posts:profile_follow',
                 kwargs={'username': followed_user.username}
             )
         )
-        # asserts that follow post request created a follow entry
+        response_user = follow_response.wsgi_request.user
+        # assert that follow post request created a follow entry
         self.assertTrue(
             Follow.objects.filter(
-                user=response_follow.wsgi_request.user, author=followed_user
+                user=response_user, author=followed_user
             ).exists()
         )
         self.author_client.post(
@@ -365,10 +384,10 @@ class PostsViewsTests(TestCase):
                 kwargs={'username': followed_user.username}
             )
         )
-        # asserts that unfollow post request deleted entry from database
+        # assert that unfollow post request deleted entry from database
         self.assertFalse(
             Follow.objects.filter(
-                user=response_follow.wsgi_request.user, author=followed_user
+                user=response_user, author=followed_user
             ).exists()
         )
 
