@@ -25,7 +25,10 @@
       {% endif %}
     {% endif %}
   </div>
-  <div class="container py-5">   
-    {% include 'posts/includes/posts_info.html' %}
+  <div class="container py-5">
+    {% for post in page_obj %}
+      {% include 'posts/includes/post_info.html' %}
+    {% endfor %}
+    {% include 'includes/paginator.html' %}
   </div>
 {% endblock %}

@@ -6,8 +6,13 @@
   <h2>{{ group.title }}</h2>
 {% endblock %}
 {% block description %}
-  <i>{{ group.description }}</i>
+  <p>{{ group.description }}</p>
 {% endblock %}
 {% block content %}
-  {% include 'posts/includes/posts_info.html' %}
+  <div class="container py-5">
+    {% for post in page_obj %}
+      {% include 'posts/includes/post_info.html' %}
+    {% endfor %}
+    {% include 'includes/paginator.html' %}
+  </div>
 {% endblock %}

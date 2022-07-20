@@ -1,8 +1,16 @@
-{% extends 'posts/index.html' %}
-{% load cache %}
+{% extends 'base.html' %}
 {% block title %}
   Лента подписок
 {% endblock %}
 {% block header %}
   <h2>Лента подписок</h2>
+{% endblock %}
+{% block content %}
+  {% include 'posts/includes/switcher.html' %}
+  <div class="container py-5">
+    {% for post in page_obj %}
+      {% include 'posts/includes/post_info.html' %}
+    {% endfor %}
+    {% include 'includes/paginator.html' %}
+  </div>
 {% endblock %}

@@ -55,7 +55,7 @@ def post_detail(request, post_id):
     post_comments = post.comments.all()
     context = {
         'post': post,
-        'form': CommentForm,
+        'form': CommentForm(),
         'post_comments': post_comments
     }
     return render(request, 'posts/post_detail.html', context)
@@ -118,10 +118,16 @@ def follow_index(request):
 def profile_follow(request, username):
     if request.user.username == username:
         return redirect('posts:profile', username)
-    Follow.objects.create(
+    follow_exists = Follow.objects.filter(
         user=request.user,
         author=User.objects.get(username=username)
-    )
+    ).exists()
+    if not follow_exists:
+        Follow.objects.create(
+            user=request.user,
+            author=User.objects.get(username=username)
+        )
+        return redirect('posts:profile', username)
     return redirect('posts:profile', username)
 
 

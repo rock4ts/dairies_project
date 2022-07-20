@@ -8,11 +8,12 @@
 {% endblock %}
 {% block content %}
   {% include 'posts/includes/switcher.html' %}
-  {% if request.resolver_match.url_name == 'index' %}
-    {% cache 20 index_page page_obj.number %}
-      {% include 'posts/includes/posts_info.html' %}
-    {% endcache %}
-  {% else %}
-    {% include 'posts/includes/posts_info.html' %}
-  {% endif %}
+  {% cache 20 index_page page_obj.number %}
+    <div class="container py-5">
+      {% for post in page_obj %}
+        {% include 'posts/includes/post_info.html' %}
+      {% endfor %}
+      {% include 'includes/paginator.html' %}
+    </div>
+  {% endcache %}
 {% endblock %}
