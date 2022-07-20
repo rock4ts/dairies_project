@@ -4,7 +4,6 @@ import math
 from django.core.files.uploadedfile import SimpleUploadedFile
 
 from posts.models import Post
-
 from yatube.settings import posts_per_page
 
 
