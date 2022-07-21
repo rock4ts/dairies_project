@@ -346,7 +346,6 @@ class PostsViewsTests(TestCase):
         self.assertEqual(filter_duplicate_follow.count(), 1)
         self.assertTrue(new_follow == filter_duplicate_follow[0])
 
-
     def test_profile_follow_redirects_if_user_tries_to_follow_himself(self):
         following_user = PostsViewsTests.test_author
         follow_response = self.author_client.post(
