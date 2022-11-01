@@ -27,12 +27,14 @@
   {% block header %}
     {# Название страницы #}<br>
   {% endblock %}
-  {% block description %}
-    {# Описание страницы #}
-  {% endblock %}
-  {% block content %}
-    {# Наполнение страницы #}
-  {% endblock %}
+  <body>
+    {% block description %}
+      {# Описание страницы #}
+    {% endblock %}
+    {% block content %}
+      {# Наполнение страницы #}
+    {% endblock %}
+  </body>
 </div>
 {% include 'includes/footer.html' %}
 

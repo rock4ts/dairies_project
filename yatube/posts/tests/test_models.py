@@ -63,10 +63,11 @@ class PostsModelsTest(TestCase):
     def test_follow_model_applies_unique_constraints(self):
         followed_user = PostsModelsTest.test_author_for_follow
         following_user = PostsModelsTest.test_author
-        Follow.objects.create(user=following_user, author=followed_user)
-        with self.assertRaises(Exception) as raised:
+        try:
             Follow.objects.create(user=following_user, author=followed_user)
-        self.assertEqual(IntegrityError, type(raised.exception))
+            Follow.objects.create(user=following_user, author=followed_user)
+        except Exception as err:
+            self.assertIsInstance(err, IntegrityError)
 
     def test_no_self_follow(self):
         following_user = PostsModelsTest.test_author

@@ -8,7 +8,7 @@ from .utils import create_page_obj
 
 def index(request):
     template = 'posts/index.html'
-    post_list = Post.objects.select_related('group').all()
+    post_list = Post.objects.select_related('group', 'author').all()
     page_obj = create_page_obj(request, post_list)
     context = {
         'page_obj': page_obj,

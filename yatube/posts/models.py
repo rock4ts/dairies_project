@@ -1,5 +1,6 @@
 from pytils.translit import slugify
 
+
 from django.contrib.auth import get_user_model
 from django.db import models
 
@@ -88,7 +89,7 @@ class Follow(models.Model):
         constraints = [
             models.UniqueConstraint(
                 fields=['user', 'author'],
-                name='Пользователь уже подписан на данного автора'
+                name='unique_constraint_fail',
             ),
             models.CheckConstraint(
                 check=~models.Q(user=models.F('author')),

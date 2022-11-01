@@ -27,13 +27,14 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
-    'django.contrib.staticfiles',
+    'django.contrib.staticfiles'    ,
     'django.forms',
     'users.apps.UsersConfig',
     'posts.apps.PostsConfig',
     'about.apps.AboutConfig',
     'core.apps.CoreConfig',
     'sorl.thumbnail',
+    'debug_toolbar',
 ]
 
 MIDDLEWARE = [
@@ -44,6 +45,11 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
+]
+
+INTERNAL_IPS = [
+    '127.0.0.1',
 ]
 
 ROOT_URLCONF = 'yatube.urls'
@@ -114,6 +120,6 @@ EMAIL_FILE_PATH = os.path.join(BASE_DIR, 'sent_email')
 
 CSRF_FAILURE_VIEW = 'core.views.csrf_failure'
 
-# project constants
+# Project variables
 
 posts_per_page = 10
