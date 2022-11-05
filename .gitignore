@@ -151,4 +151,5 @@ dmypy.json
 yatube/media/
 
 # praktikum tests
-/tests
+.tests
+tests/
