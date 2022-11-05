@@ -1,16 +1,26 @@
 import os
 
+import sentry_sdk
+from dotenv import load_dotenv
+from sentry_sdk.integrations.django import DjangoIntegration
+
+load_dotenv()
+
+sentry_sdk.init(
+	dsn="https://1757762d43294711875b75de7c19021b@o4504100415012864.ingest.sentry.io/4504100419600384",
+	integrations=[DjangoIntegration()],
+)
+
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 SECRET_KEY = 'fuq-fyug(@5u)#!i7%--$d3zk2+d(1c%828h_nae0ei^e+x2__'
 
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = [
+    '51.250.106.146',
+    'walkjn.ddns.net',
     'localhost',
-    '127.0.0.1',
-    '[::1]',
-    'testserver',
 ]
 
 CACHES = {
@@ -76,8 +86,12 @@ WSGI_APPLICATION = 'yatube.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': os.getenv('DB_ENGINE', 'django.db.backends.postgresql'),
+        'NAME': os.getenv('DB_NAME'),
+        'USER': os.getenv('POSTGRES_USER'),
+	'PASSWORD': os.getenv('POSTGRES_PASSWORD'),
+	'HOST': os.getenv('DB_HOST'),
+	'PORT': os.getenv('DB_PORT')
     }
 }
 
@@ -107,7 +121,7 @@ USE_L10N = True
 USE_TZ = True
 
 STATIC_URL = '/static/'
-STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
+STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
