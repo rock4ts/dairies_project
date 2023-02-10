@@ -8,12 +8,12 @@ handler500 = 'core.views.server_error'
 handler403 = 'core.views.permission_denied'
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('auth/', include('users.urls', namespace='users')),
-    path('auth/', include('django.contrib.auth.urls')),
-    path('', include('posts.urls', namespace='posts')),
-    path('group/', include('posts.urls', namespace='posts')),
-    path('about/', include('about.urls', namespace='about')),
+    path('dairies/admin/', admin.site.urls),
+    path('dairies/auth/', include('users.urls', namespace='users')),
+    path('dairies/auth/', include('django.contrib.auth.urls')),
+    path('dairies/', include('posts.urls', namespace='posts')),
+    path('dairies/group/', include('posts.urls', namespace='posts')),
+    path('dairies/about/', include('about.urls', namespace='about')),
 ]
 
 if settings.DEBUG:
