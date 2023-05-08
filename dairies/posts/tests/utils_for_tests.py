@@ -4,7 +4,7 @@ import math
 from django.core.files.uploadedfile import SimpleUploadedFile
 
 from posts.models import Post
-from walkjn.settings import posts_per_page
+from dairies.settings import posts_per_page
 
 
 def posts_number_on_page(page_number):
@@ -18,7 +18,7 @@ def posts_number_on_page(page_number):
     return posts_per_page
 
 
-def page_entry_equal_model_entry(self, Model, page_entry, model_enty):
+def page_entry_equal_model_entry(self, Model, page_entry, model_entry):
     """Function that checks if page object instance is equal
     to model object instance by comparing every field data.
     """
@@ -27,23 +27,8 @@ def page_entry_equal_model_entry(self, Model, page_entry, model_enty):
         with self.subTest(field=field):
             self.assertEqual(
                 getattr(page_entry, field),
-                getattr(model_enty, field)
+                getattr(model_entry, field)
             )
-
-
-def context_form_fields_are_instances(self, response, Form):
-    """Function that iterates through context form of response and checks
-    if each form field content represent the instance
-    of a specified form corresponding field class.
-    """
-    form_instance = Form()
-    form_fields = (
-        {f: form_instance.fields[f].__class__ for f in form_instance.fields}
-    )
-    for field, value in form_fields.items():
-        with self.subTest(field=field):
-            context_field = response.context['form'].fields.get(field)
-            self.assertIsInstance(context_field, value)
 
 
 def create_test_image(image_name: str, format: str):

@@ -4,11 +4,13 @@ from http import HTTPStatus
 
 from django.conf import settings
 from django.contrib.auth import get_user_model
-from django.test import override_settings, TestCase
+from django.forms import Textarea
+from django.test import Client, override_settings, TestCase
 from django.urls import reverse
 
+from posts.forms import CommentForm
 from posts.models import Comment, Post, Group
-from posts.tests import posts_test_utils
+from posts.tests.utils_for_tests import create_test_image
 
 User = get_user_model()
 TEMP_MEDIA_ROOT = tempfile.mkdtemp(dir=settings.BASE_DIR)
@@ -32,7 +34,7 @@ class PostsFormsTests(TestCase):
             text='Тестовый текст',
             author=PostsFormsTests.test_author,
             group=PostsFormsTests.test_group,
-            image=posts_test_utils.create_test_image(
+            image=create_test_image(
                 'test_image', 'gif'
             )
         )
@@ -41,15 +43,13 @@ class PostsFormsTests(TestCase):
             author=PostsFormsTests.test_author,
             text='Тестовый комментарий',
         )
+        cls.author_client = Client()
+        cls.author_client.force_login(PostsFormsTests.test_author)
 
     @classmethod
     def tearDownClass(cls):
         super().tearDownClass()
         shutil.rmtree(TEMP_MEDIA_ROOT, ignore_errors=True)
-
-    def setUp(self):
-        self.author_client = self.client
-        self.author_client.force_login(PostsFormsTests.test_author)
 
     def test_create_post(self):
         posts_count = Post.objects.count()
@@ -59,16 +59,17 @@ class PostsFormsTests(TestCase):
         create_form_data = {
             'text': 'Тестовая запись из формы',
             'group': PostsFormsTests.test_group.id,
-            'image': posts_test_utils.create_test_image(
+            'image': create_test_image(
                 'create_post_image', 'gif'
             )
         }
-        response = self.author_client.post(
+        response = PostsFormsTests.author_client.post(
             reverse('posts:post_create'),
             data=create_form_data,
             follow=True
         )
         created_post = Post.objects.exclude(id__in=post_ids_before_create)[0]
+
         self.assertEqual(
             created_post.text,
             create_form_data['text']
@@ -82,7 +83,6 @@ class PostsFormsTests(TestCase):
             create_form_data['image'].__dict__['_name']
         )
         self.assertEqual(Post.objects.count(), posts_count + 1)
-
         self.assertEqual(response.status_code, HTTPStatus.OK)
         post_author = response.wsgi_request.user
         self.assertRedirects(
@@ -91,19 +91,12 @@ class PostsFormsTests(TestCase):
         )
 
     def test_edit_post(self):
-        test_post_for_edit = Post.objects.create(
-            text='Тестовый текст',
-            author=PostsFormsTests.test_author,
-            group=PostsFormsTests.test_group,
-            image=posts_test_utils.create_test_image(
-                'create_post_image', 'gif'
-            )
-        )
+        test_post_for_edit = PostsFormsTests.test_post
         posts_count = Post.objects.count()
         edit_form_data = {
             'text': 'Изменённый тестовый текст',
             'group': PostsFormsTests.test_group_for_updates.id,
-            'image': posts_test_utils.create_test_image(
+            'image': create_test_image(
                 'edit_post_image', 'gif'
             ),
         }
@@ -120,7 +113,7 @@ class PostsFormsTests(TestCase):
             test_post_for_edit.image.name.split('/')[-1],
             edit_form_data['image'].__dict__['_name']
         )
-        response = self.author_client.post(
+        response = PostsFormsTests.author_client.post(
             reverse(
                 'posts:post_edit', kwargs={'post_id': test_post_for_edit.id}
             ),
@@ -159,7 +152,7 @@ class PostsFormsTests(TestCase):
         comment_form_data = {
             'text': 'Тестовый комментарий из формы',
         }
-        response = self.author_client.post(
+        response = PostsFormsTests.author_client.post(
             reverse('posts:add_comment', kwargs={'post_id': test_post_id}),
             data=comment_form_data,
             follow=True
@@ -174,3 +167,53 @@ class PostsFormsTests(TestCase):
             response,
             reverse('posts:post_detail', kwargs={'post_id': test_post_id})
         )
+
+    def test_edit_comment(self):
+        test_post_with_comment = PostsFormsTests.test_post
+        test_comment_for_edit = PostsFormsTests.test_comment
+        comments_count = Post.objects.count()
+        edit_form_data = {
+            'text': 'Изменённый тестовый комментарий',
+        }
+        # check initial post data is not equal to form data
+        self.assertNotEqual(
+            test_comment_for_edit.text,
+            edit_form_data['text']
+        )
+        response = PostsFormsTests.author_client.post(
+            reverse(
+                'posts:edit_comment',
+                kwargs={'comment_id': test_comment_for_edit.id}
+            ),
+            data=edit_form_data,
+            follow=True
+        )
+        test_comment_after_edit = Comment.objects.get(
+            pk=test_comment_for_edit.id
+        )
+        self.assertEqual(Comment.objects.count(), comments_count)
+        # check editted post data is equal to form data
+        self.assertEqual(
+            test_comment_after_edit.text,
+            edit_form_data['text']
+        )
+        self.assertEqual(response.status_code, HTTPStatus.OK)
+        self.assertRedirects(
+            response,
+            reverse(
+                'posts:post_detail',
+                kwargs={'post_id': test_post_with_comment.id}
+            )
+        )
+
+    def test_comment_form_widgets(self):
+        text_widget_type = CommentForm.Meta.widgets.get('text')
+        self.assertIsInstance(text_widget_type, Textarea)
+        text_widget_cols_number = (
+            CommentForm.Meta.widgets.get('text').attrs['cols']
+        )
+        self.assertEqual(text_widget_cols_number, 80)
+        text_widget_rows_number = (
+            CommentForm.Meta.widgets.get('text').attrs['rows']
+        )
+        self.assertEqual(text_widget_rows_number, 5)

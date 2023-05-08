@@ -4,7 +4,9 @@
     <li>Автор: {{ post.author.get_full_name }}</li>
     <li>Дата публикации: {{ post.pub_date|date:"d E Y" }}</li>
     {% if not group_page and post.group %}
-      <li><a href={% url "posts:group_posts" post.group.slug %}>
+      <li>
+        Тема: 
+        <a href={% url "posts:group_posts" post.group.slug %}>
         {{ post.group }}</a>
       </li>
     {% endif %}

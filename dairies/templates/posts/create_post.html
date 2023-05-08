@@ -1,7 +1,9 @@
 {% extends 'base.html' %}
 {% load user_filters %}
 {% block title%}
-  {% if not is_edit %}
+  {% if is_comment %}
+    Редактировать комментарий
+  {% elif not is_edit %}
     Добавить запись
   {% else %}
     Редактировать запись
@@ -13,12 +15,14 @@
       <div class="col-md-8 p-5">
         <div class="card">
           <div class="card-header">  
-            {% if not is_edit %}     
-              Добавить запись             
-            {% else %}      
+            {% if is_comment %}
+              Редактировать комментарий
+            {% elif not is_edit %}
+              Добавить запись
+            {% else %}
               Редактировать запись
             {% endif %}
-           </div>
+          </div>
           <div class="card-body">
             {% if form.errors %}
               {% for field in form %}
@@ -61,10 +65,10 @@
               {% endfor %}
               <div class="d-flex justify-content-end">
                 <button type="submit" class="btn btn-primary">
-                  {% if not is_edit %}
-                    Создать
-                  {% else %}
+                  {% if is_edit or is_comment %}
                     Сохранить
+                  {% else %}
+                    Создать
                   {% endif %}
                 </button>
               </div>

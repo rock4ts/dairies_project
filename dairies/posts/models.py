@@ -20,14 +20,14 @@ class Post(PubDateModel):
     )
     group = models.ForeignKey(
         'Group',
+        verbose_name='Тема',
         blank=True,
         null=True,
         on_delete=models.SET_NULL,
         related_name='posts',
-        verbose_name='Сообщество',
     )
     image = models.ImageField(
-        'Изображение',
+        verbose_name='Изображение',
         upload_to='posts/',
         blank=True
     )
@@ -40,9 +40,19 @@ class Post(PubDateModel):
 
 
 class Group(models.Model):
-    title = models.CharField(max_length=200)
-    slug = models.SlugField(unique=True)
-    description = models.TextField()
+    title = models.CharField(
+        verbose_name='Название темы',
+        max_length=200
+    )
+    slug = models.SlugField(
+        'Слаг темы',
+        max_length=100,
+        unique=True,
+        blank=True
+    )
+    description = models.TextField(
+        verbose_name='Краткое описание темы'
+    )
 
     def save(self, *args, **kwargs):
         if not self.slug:
@@ -67,20 +77,35 @@ class Comment(PubDateModel):
     text = models.TextField(
         verbose_name='Текст комментария',
     )
+    initial_text = models.TextField(
+        verbose_name='Изначальный текст комментария',
+        blank=True
+    )
+    is_edited = models.BooleanField(default=False)
+
+    class Meta:
+        ordering = ['-pub_date']
+
+    def save(self, *args, **kwargs):
+        self.initial_text = self.text
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return 'Комментарий'
 
 
 class Follow(models.Model):
     user = models.ForeignKey(
         User,
+        verbose_name='Подписчик',
         on_delete=models.CASCADE,
-        related_name='followerы',
-        verbose_name='Подписчик'
+        related_name='follower',
     )
     author = models.ForeignKey(
         User,
+        verbose_name='Автор',
         on_delete=models.CASCADE,
         related_name='following',
-        verbose_name='Автор'
     )
 
     class Meta:

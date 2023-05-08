@@ -1,0 +1,54 @@
+a {
+  color: rgb(0, 103, 72);
+  background-color: transparent;
+  text-decoration: none;
+}
+a:hover {
+  color: rgb(0, 103, 72);
+  background-color: transparent;
+  text-decoration: underline;
+}
+
+.switcher-link {
+  color: black;
+}
+
+a.switcher-link.active {
+  color: black !important;
+}
+
+a.nav-link.link-light.active {
+  background-color: rgb(0, 103, 72) !important;
+  border-color: rgb(0, 103, 72) !important;
+  padding-left: 12px;
+  padding-right: 12px;
+  display: inline-block;
+}
+
+.btn-primary, .btn-primary:hover, .btn-primary:active, .btn-primary:visited {
+  background-color: rgb(0, 103, 72) !important;
+  border-color: rgb(0, 103, 72) !important;
+}
+
+.switcher-link:hover {
+  color: rgb(0, 103, 72);
+}
+
+.navbar-toggler-icon {
+  background-image: url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 32 32' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='rgb(55,125,95)' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 8h24M4 16h24M4 24h24'/%3E%3C/svg%3E");
+}
+
+.navbar-toggler {
+  border-color: rgb(0, 103, 72);
+  width: 40px !important;
+  padding: 0px !important;
+}
+
+.header-item {
+  margin-right:20px;
+}
+
+#HASH {
+  display: flex;
+  justify-content: space-between;
+}

@@ -14,11 +14,12 @@
             <form method="post">
               {% csrf_token %}
               {% include 'users/includes/form_fields.html' %}
-              <div class="row justify-content-center">
+              <div class="justify-content-center" align="center">
                   <button type="submit" class="btn btn-primary">
                     Войти
                   </button>
-                  <a href="{% url 'users:password_reset' %}" class="btn btn-link">
+                  <a href="{% url 'users:password_reset' %}"
+                    class="btn btn-link" style="color:black;">
                     Забыли пароль?
                   </a>
               </div>

@@ -1,13 +1,15 @@
 {% extends 'base.html' %}
 {% load cache %}
 {% block title %}
-    Последние обновления на сайте
+    Главная страница
 {% endblock %}
 {% block header %}
-  <h2>Последние обновления на сайте</h2>
+  <h2>Главная страница</h2>
 {% endblock %}
 {% block content %}
-  {% include 'posts/includes/switcher.html' %}
+  {% if has_subscriptions%}
+    {% include 'posts/includes/switcher.html' %}
+  {% endif %}
   {% cache 20 index_page page_obj.number %}
     <div class="container py-5">
       {% for post in page_obj %}

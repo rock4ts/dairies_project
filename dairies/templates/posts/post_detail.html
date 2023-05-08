@@ -13,6 +13,7 @@
           </li>
           {% if post.group %}
             <li class="list-group-item">
+              Тема: 
               <a href={% url "posts:group_posts" post.group.slug %}>
               {{ post.group }}</a>
             </li>
@@ -27,6 +28,10 @@
             <li class="list-group-item">
               <a href={% url "posts:post_edit" post.id %}>
                 Редактировать запись</a>
+            </li>
+            <li class="list-group-item">
+              <a href={% url "posts:post_delete" post.id %}>
+                Удалить запись</a>
             </li>
           {% endif %}
           <li class="list-group-item">
@@ -49,25 +54,46 @@
             <form method="post" action="{% url 'posts:add_comment' post.id %}">
               {% csrf_token %}
               <div class="form-group mb-2">
-                {{ form.text|addclass:"form-control" }}
+                {{ form.text|addclass:"form-control"}}
               </div>
-              <button type="submit" class="btn btn-primary">Отправить</button>
+              <div class="justify-content-end" align="right">
+                <button type="submit" class="btn btn-primary">Отправить</button>
+              </div>
             </form>
           </div>
         </div>
       {% endif %}
-  
-      {% for comment in post_comments %}
-        <div class="media bm-4">
-          <div class="media-body">
-            <h6 class="mt-0">
-              <a href="{% url 'posts:profile' comment.author.username %}">
-                {{ comment.author.username }}</a>
-            </h6>
-            <p>{{ comment.text }}</p>
+        {% for comment in post_comments %}
+          <hr>
+          <div class="media bm-4">
+            <div class="media-body">
+              <div id="HASH">
+                <h6 class="mt-0">
+                  <a href="{% url 'posts:profile' comment.author.username %}">
+                    {{ comment.author.username }}</a>
+                </h6>
+                {% if comment.is_edited %}
+                  <small>(edited)</small>
+                {% endif %}
+              </div>
+                  {{ comment.text }}
+              {% if user.id == comment.author.id %}
+                <div style="text-align:right;">
+                  <small><a href={% url "posts:edit_comment" comment.pk %}>
+                    Редактировать</a></small>
+                  <br>
+                  <small><a href={% url "posts:delete_comment" comment.pk %}>
+                    Удалить </a></small>
+                </div>
+              {% endif %}
+            </div>
           </div>
-        </div>
-      {% endfor %}
+        {% endfor %}
     </article>
   </div> 
 {% endblock %}
+
+<ul class="list-group list-group-flush">
+  <li class="list-group-item">
+      Дата публикации: {{ post.pub_date }}
+  </li>
